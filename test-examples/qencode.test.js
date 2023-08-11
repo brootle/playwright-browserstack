@@ -1,10 +1,7 @@
-require('dotenv').config();
-
-// import { test, expect } from '@playwright/test';
 const { test } = require("../fixture");
 const { expect } = require("@playwright/test");
 
-// test('Test Qencode Login', async ({ page }) => {
+
 test("Test Qencode Login", async ({ page }, testInfo) => {
   try {
 

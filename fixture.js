@@ -1,18 +1,7 @@
-require('dotenv').config();
-
-const base = require("@playwright/test");
-const cp = require("child_process");
-//const { _android } = require("playwright");
-// const clientPlaywrightVersion = cp
-//   .execSync("npx playwright --version")
-//   .toString()
-//   .trim()
-//   .split(" ")[1];
+import { test as baseTest } from '@playwright/test';
 const BrowserStackLocal = require("browserstack-local");
-//const util = require("util");
 
 // BrowserStack Specific Capabilities.
-// Set 'browserstack.local:true For Local testing
 const caps = {
   //osVersion: "13.0",
   //deviceName: "Samsung Galaxy S23", // "Samsung Galaxy S22 Ultra", "Google Pixel 7 Pro", "OnePlus 9", etc.
@@ -20,17 +9,17 @@ const caps = {
   browserName: "chrome",
   realMobile: "true",
   name: "Qencode autorization test",
-  build: "playwright-build-1",
+  build: "playwright-browserstack",
   "browserstack.username": process.env.BROWSERSTACK_USERNAME || "<USERNAME>",
   "browserstack.accessKey":
     process.env.BROWSERSTACK_ACCESS_KEY || "<ACCESS_KEY>",
   "browserstack.local": process.env.BROWSERSTACK_LOCAL || false,
 };
 
-exports.bsLocal = new BrowserStackLocal.Local();
+export const bsLocal = new BrowserStackLocal.Local();
 
 // replace YOUR_ACCESS_KEY with your key. You can also set an environment variable - "BROWSERSTACK_ACCESS_KEY".
-exports.BS_LOCAL_ARGS = {
+export const BS_LOCAL_ARGS = {
   key: process.env.BROWSERSTACK_ACCESS_KEY || "ACCESSKEY",
 };
 
@@ -63,25 +52,8 @@ const patchCaps = (name, title) => {
   caps.name = title;
 };
 
-const isHash = (entity) =>
-  Boolean(entity && typeof entity === "object" && !Array.isArray(entity));
-const nestedKeyValue = (hash, keys) =>
-  keys.reduce((hash, key) => (isHash(hash) ? hash[key] : undefined), hash);
-const isUndefined = (val) => val === undefined || val === null || val === "";
-const evaluateSessionStatus = (status) => {
-  if (!isUndefined(status)) {
-    status = status.toLowerCase();
-  }
-  if (status === "passed") {
-    return "passed";
-  } else if (status === "failed" || status === "timedout") {
-    return "failed";
-  } else {
-    return "";
-  }
-};
-
-exports.test = base.test.extend({
+// exports.test = base.test.extend({
+export const test = baseTest.extend({
   page: async ({ page, playwright }, use, testInfo) => {
     if (testInfo.project.name.match(/browserstack/)) {
       let vBrowser, vContext, vDevice;
