@@ -39,7 +39,11 @@ test("Test Qencode Login Failure due to wrong password", async ({ page }, testIn
     await page.locator('#login_email').fill(QENCODE_EMAIL);
     await page.locator('#login_password').fill(QENCODE_PASSWORD);    
 
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    const button = await page.locator('button:text("Sign In")');
+    const boundingBox = await button.boundingBox();
+    await page.mouse.click(boundingBox.x + boundingBox.width / 2, boundingBox.y + boundingBox.height / 2);
+    
+    // await page.getByRole('button', { name: 'Sign In' }).click();
 
     // Wait for the "Invalid Email or Password" text to appear on the page
     await page.waitForSelector('text=Invalid Email or Password');    

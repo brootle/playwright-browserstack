@@ -29,8 +29,8 @@ test("Test Qencode Login", async ({ page }, testInfo) => {
       // Code for mobile device, e.g. opening hamburger menu
       await page.getByRole('navigation').getByRole('button').click();
       await page.waitForTimeout(1000); // Adjust as needed
-    }   
-
+    }
+    
     await page.getByRole('link', { name: 'Sign In' }).click();
 
     // Expects the URL to contain intro.
@@ -39,7 +39,11 @@ test("Test Qencode Login", async ({ page }, testInfo) => {
     await page.locator('#login_email').fill(QENCODE_EMAIL);
     await page.locator('#login_password').fill(QENCODE_PASSWORD);
 
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    const button = await page.locator('button:text("Sign In")');
+    const boundingBox = await button.boundingBox();
+    await page.mouse.click(boundingBox.x + boundingBox.width / 2, boundingBox.y + boundingBox.height / 2);
+
+    // await page.getByRole('button', { name: 'Sign In' }).click();
 
     // Expects the URL to contain intro.
     await expect(page).toHaveURL(/.*dashboard/);    
